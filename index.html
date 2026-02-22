@@ -1265,15 +1265,12 @@
         submitBtn.disabled = true;
 
         try {
-          // Simulate API call — replace with your actual endpoint
-          await new Promise(resolve => setTimeout(resolve, 1200));
-
-          // Store locally as fallback
-          const waitlist = JSON.parse(localStorage.getItem('tandemly_waitlist') || '[]');
-          if (!waitlist.includes(email)) {
-            waitlist.push(email);
-            localStorage.setItem('tandemly_waitlist', JSON.stringify(waitlist));
-          }
+          const formData = new FormData(form);
+          await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString()
+          });
 
           messageEl.textContent = "You're on the list! We'll be in touch soon.";
           messageEl.className = 'form-message visible success';
