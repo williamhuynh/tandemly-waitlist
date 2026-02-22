@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(powershell:*)",
+      "Bash(start \"\" \"C:\\\\NoPlayBook\\\\tandemly-waitlist\\\\index.html\")",
+      "Bash(cd:*)"
+    ]
+  }
+}

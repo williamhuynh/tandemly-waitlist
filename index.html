@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tandemly — Family Finance, Unified</title>
+  <meta name="description" content="Consolidate bank statements, track net worth, and manage family finances in one collaborative app.">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Tandemly — Family Finance, Unified">
+  <meta property="og:description" content="Consolidate bank statements, track net worth, and manage family finances in one collaborative app.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════
+       CSS VARIABLES — Dark Neo Design System
+    ═══════════════════════════════════════════ */
+    :root {
+      /* Surfaces */
+      --bg-primary: #0d1117;
+      --bg-secondary: #151b23;
+      --bg-card: rgba(21, 27, 35, 0.6);
+      --bg-card-hover: rgba(21, 27, 35, 0.8);
+
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-amber: rgba(217, 158, 56, 0.3);
+
+      /* Text */
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+
+      /* Accents */
+      --amber: #d99e38;
+      --amber-light: #e8b954;
+      --amber-glow: rgba(217, 158, 56, 0.15);
+      --amber-glow-strong: rgba(217, 158, 56, 0.25);
+      --green-muted: #3fb950;
+      --red-muted: #f85149;
+
+      /* Typography */
+      --font-display: 'Bricolage Grotesque', serif;
+      --font-body: 'Manrope', sans-serif;
+
+      /* Spacing */
+      --section-pad: clamp(4rem, 8vw, 7rem);
+
+      /* Glass */
+      --glass-blur: 20px;
+      --glass-bg: rgba(21, 27, 35, 0.5);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       BACKGROUND ATMOSPHERE
+    ═══════════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 20%, rgba(217, 158, 56, 0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 500px at 80% 10%, rgba(217, 158, 56, 0.03) 0%, transparent 60%),
+        radial-gradient(ellipse 400px 600px at 50% 80%, rgba(59, 130, 246, 0.02) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle noise texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      padding: var(--section-pad) 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 0;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--bg-primary);
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-cta {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--bg-primary);
+      background: var(--amber);
+      border: none;
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .nav-cta:hover {
+      background: var(--amber-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px var(--amber-glow-strong);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+    }
+
+    .hero-content {
+      max-width: 720px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      background: var(--amber-glow);
+      border: 1px solid rgba(217, 158, 56, 0.2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--amber-light);
+      margin-bottom: 1.75rem;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: pulse-dot 2s ease infinite;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.75rem, 6vw, 4.25rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 540px;
+      margin-bottom: 2.25rem;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .hero-form {
+      display: flex;
+      gap: 0.75rem;
+      animation: fadeInUp 0.6s ease 0.3s both;
+    }
+
+    .hero-input {
+      flex: 1;
+      max-width: 320px;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-glass);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .hero-input:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px var(--amber-glow);
+    }
+
+    .hero-submit {
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      color: var(--bg-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .hero-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px var(--amber-glow-strong);
+    }
+
+    .hero-submit:active {
+      transform: translateY(0);
+    }
+
+    .hero-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .hero-note {
+      margin-top: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      animation: fadeInUp 0.6s ease 0.4s both;
+    }
+
+    .hero-visual {
+      margin-top: 4rem;
+      animation: fadeInUp 0.8s ease 0.5s both;
+    }
+
+    /* App preview card (glass morphism) */
+    .app-preview {
+      position: relative;
+      border-radius: 16px;
+      border: 1px solid var(--border-glass);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    .app-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(217, 158, 56, 0.2), transparent 50%, rgba(217, 158, 56, 0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .preview-badge-live {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--green-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .preview-badge-live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-muted);
+      animation: pulse-dot 2s ease infinite;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .preview-stat {
+      padding: 1.15rem 1rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-stat::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .preview-stat:nth-child(1)::after {
+      background: linear-gradient(90deg, var(--amber), transparent);
+    }
+
+    .preview-stat:nth-child(2)::after {
+      background: linear-gradient(90deg, var(--green-muted), transparent);
+    }
+
+    .preview-stat:nth-child(3)::after {
+      background: linear-gradient(90deg, var(--red-muted), transparent);
+    }
+
+    .preview-stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+
+    .preview-stat-value {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .preview-stat-delta {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+
+    .preview-stat-delta.up {
+      color: var(--green-muted);
+    }
+
+    .preview-stat-delta.down {
+      color: var(--red-muted);
+    }
+
+    /* ═══════════════════════════════════════════
+       FEATURES
+    ═══════════════════════════════════════════ */
+    .features {
+      padding-bottom: var(--section-pad);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      position: relative;
+      padding: 1.75rem;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(217, 158, 56, 0.12), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--amber-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.15rem;
+      font-size: 1.15rem;
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 650;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ═══════════════════════════════════════════
+       HOW IT WORKS
+    ═══════════════════════════════════════════ */
+    .how-it-works {
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .step {
+      position: relative;
+    }
+
+    .step-number {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--amber), rgba(217, 158, 56, 0.2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .step h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 650;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Connector lines between steps */
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      right: -1.25rem;
+      width: calc(2.5rem);
+      height: 1px;
+      background: linear-gradient(90deg, var(--border-amber), transparent);
+    }
+
+    /* ═══════════════════════════════════════════
+       SOCIAL PROOF / TRUST
+    ═══════════════════════════════════════════ */
+    .trust {
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .trust-item {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .trust-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .trust-item h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 650;
+      margin-bottom: 0.3rem;
+    }
+
+    .trust-item p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA SECTION
+    ═══════════════════════════════════════════ */
+    .cta-section {
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .cta-card {
+      position: relative;
+      text-align: center;
+      padding: 4rem 2rem;
+      border-radius: 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      overflow: hidden;
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(217, 158, 56, 0.25), transparent 40%, transparent 60%, rgba(217, 158, 56, 0.15));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Amber glow behind CTA */
+    .cta-card::after {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 200px;
+      background: radial-gradient(ellipse, var(--amber-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-card h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-card .cta-sub {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 440px;
+      margin: 0 auto 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-form .hero-input {
+      max-width: 300px;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .footer {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.6rem;
+      color: var(--bg-primary);
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-secondary);
+    }
+
+    /* ═══════════════════════════════════════════
+       FORM STATES
+    ═══════════════════════════════════════════ */
+    .form-message {
+      margin-top: 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .form-message.visible {
+      opacity: 1;
+    }
+
+    .form-message.success {
+      color: var(--green-muted);
+    }
+
+    .form-message.error {
+      color: var(--red-muted);
+    }
+
+    .hero-submit.loading {
+      pointer-events: none;
+      position: relative;
+      color: transparent;
+    }
+
+    .hero-submit.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      margin: -9px 0 0 -9px;
+      border: 2px solid rgba(13, 17, 23, 0.3);
+      border-top-color: var(--bg-primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.08s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.16s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.32s; opacity: 1; transform: translateY(0); }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .hero-form {
+        flex-direction: column;
+      }
+
+      .hero-input {
+        max-width: 100%;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .step:not(:last-child)::after {
+        display: none;
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cta-form {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .cta-form .hero-input {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .cta-form .hero-submit {
+        width: 100%;
+      }
+
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer .container {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       WAITLIST COUNTER
+    ═══════════════════════════════════════════ */
+    .waitlist-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      animation: fadeInUp 0.6s ease 0.45s both;
+    }
+
+    .waitlist-count .avatars {
+      display: flex;
+    }
+
+    .waitlist-count .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-primary);
+      margin-left: -6px;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .waitlist-count .avatar:first-child {
+      margin-left: 0;
+    }
+
+    .waitlist-count .avatar:nth-child(1) {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    }
+    .waitlist-count .avatar:nth-child(2) {
+      background: linear-gradient(135deg, var(--amber), #b37a1a);
+    }
+    .waitlist-count .avatar:nth-child(3) {
+      background: linear-gradient(135deg, #10b981, #047857);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ NAV ═══════════ -->
+  <nav class="nav" id="nav">
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">T</div>
+        <span class="nav-logo-text">Tandemly</span>
+      </a>
+      <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Early access coming soon
+        </div>
+        <h1>Family Finance,<br><span class="accent">Unified.</span></h1>
+        <p class="hero-sub">Consolidate bank statements, track net worth, and manage family finances — all in one collaborative app.</p>
+
+        <form class="hero-form" id="waitlist-form-hero" novalidate>
+          <input
+            type="email"
+            class="hero-input"
+            placeholder="you@email.com"
+            required
+            aria-label="Email address"
+          >
+          <button type="submit" class="hero-submit">Join Waitlist</button>
+        </form>
+        <div class="form-message" id="hero-message"></div>
+
+        <div class="waitlist-count">
+          <div class="avatars">
+            <div class="avatar">M</div>
+            <div class="avatar">K</div>
+            <div class="avatar">J</div>
+          </div>
+          <span>Join 120+ families already on the waitlist</span>
+        </div>
+      </div>
+
+      <!-- App Preview -->
+      <div class="hero-visual">
+        <div class="app-preview">
+          <div class="preview-header">
+            <span class="preview-title">Household Overview</span>
+            <span class="preview-badge-live">Live</span>
+          </div>
+          <div class="preview-grid">
+            <div class="preview-stat">
+              <div class="preview-stat-label">Net Worth</div>
+              <div class="preview-stat-value">$84,250</div>
+              <div class="preview-stat-delta up">+2.4% this month</div>
+            </div>
+            <div class="preview-stat">
+              <div class="preview-stat-label">Total Assets</div>
+              <div class="preview-stat-value">$142,800</div>
+              <div class="preview-stat-delta up">+$3,200</div>
+            </div>
+            <div class="preview-stat">
+              <div class="preview-stat-label">Liabilities</div>
+              <div class="preview-stat-value">$58,550</div>
+              <div class="preview-stat-delta down">-$1,100</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURES ═══════════ -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Features</div>
+        <h2 class="section-heading">Everything you need to<br>see the full picture.</h2>
+        <p class="section-desc">No more juggling banking apps and spreadsheets. Tandemly brings it all together with smart automation.</p>
+      </div>
+
+      <div class="features-grid reveal-stagger">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>Import From Any Bank</h3>
+          <p>Upload CSV or PDF statements with intelligent column mapping and automatic duplicate detection.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </div>
+          <h3>Smart Categorization</h3>
+          <p>AI-powered auto-categorization, custom rules, or manual tagging. Your choice, your workflow.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Single Source of Truth</h3>
+          <p>One unified ledger across all your accounts. Filter, search, and manage every transaction in one place.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Collaborate Securely</h3>
+          <p>Invite family members and advisors with role-based access. Owner, Admin, Editor, or Viewer — you decide.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Works Everywhere</h3>
+          <p>Progressive Web App that runs on phone, tablet, and desktop. Install it like a native app — no app store needed.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Your Data, Your Rules</h3>
+          <p>Full data export and account deletion. Encrypted sessions, no cross-workspace leakage. Privacy by design.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ HOW IT WORKS ═══════════ -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-heading">Up and running in minutes.</h2>
+        <p class="section-desc">No bank logins required. Tandemly works with the statements you already have.</p>
+      </div>
+
+      <div class="steps reveal-stagger">
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3>Upload Your Statements</h3>
+          <p>Drop in CSV or PDF exports from any bank. Tandemly maps the columns and detects duplicates automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3>Review & Categorize</h3>
+          <p>AI suggests categories. Set up rules for recurring merchants. Flag unknowns for manual review.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3>See the Full Picture</h3>
+          <p>Track net worth, spot trends, generate reports, and close each month with confidence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ TRUST ═══════════ -->
+  <section class="trust">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Built For Trust</div>
+        <h2 class="section-heading">Finance is personal.<br>We treat it that way.</h2>
+      </div>
+
+      <div class="trust-grid reveal-stagger">
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4>End-to-End Encrypted</h4>
+          <p>Secure sessions, rate-limited endpoints, verified auth</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          </div>
+          <h4>No Bank Logins</h4>
+          <p>We never ask for your banking credentials. Upload exports only.</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h4>Data Portability</h4>
+          <p>Export everything. Delete anytime. Your data is always yours.</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d99e38" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          </div>
+          <h4>Workspace Isolation</h4>
+          <p>Personal, business, family — each workspace is completely separate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CTA ═══════════ -->
+  <section class="cta-section" id="waitlist">
+    <div class="container">
+      <div class="cta-card reveal">
+        <h2>Get Early Access</h2>
+        <p class="cta-sub">Be among the first to unify your family finances. No credit card required — just your email.</p>
+        <form class="cta-form" id="waitlist-form-cta" novalidate>
+          <input
+            type="email"
+            class="hero-input"
+            placeholder="you@email.com"
+            required
+            aria-label="Email address"
+          >
+          <button type="submit" class="hero-submit">Join Waitlist</button>
+        </form>
+        <div class="form-message" id="cta-message"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-left">
+        <div class="footer-logo">T</div>
+        <span class="footer-copy">&copy; 2026 Tandemly. All rights reserved.</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="mailto:hello@tandemly.app">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════ SCRIPTS ═══════════ -->
+  <script>
+    // ── Nav scroll effect ──
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Scroll reveal ──
+    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+
+    // ── Waitlist form handling ──
+    function handleWaitlistSubmit(form, messageEl) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = form.querySelector('input[type="email"]');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const email = emailInput.value.trim();
+
+        // Basic validation
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          messageEl.textContent = 'Please enter a valid email address.';
+          messageEl.className = 'form-message visible error';
+          return;
+        }
+
+        // Loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+
+        try {
+          // Simulate API call — replace with your actual endpoint
+          await new Promise(resolve => setTimeout(resolve, 1200));
+
+          // Store locally as fallback
+          const waitlist = JSON.parse(localStorage.getItem('tandemly_waitlist') || '[]');
+          if (!waitlist.includes(email)) {
+            waitlist.push(email);
+            localStorage.setItem('tandemly_waitlist', JSON.stringify(waitlist));
+          }
+
+          messageEl.textContent = "You're on the list! We'll be in touch soon.";
+          messageEl.className = 'form-message visible success';
+          emailInput.value = '';
+        } catch (err) {
+          messageEl.textContent = 'Something went wrong. Please try again.';
+          messageEl.className = 'form-message visible error';
+        } finally {
+          submitBtn.classList.remove('loading');
+          submitBtn.disabled = false;
+        }
+      });
+    }
+
+    const heroForm = document.getElementById('waitlist-form-hero');
+    const heroMsg = document.getElementById('hero-message');
+    const ctaForm = document.getElementById('waitlist-form-cta');
+    const ctaMsg = document.getElementById('cta-message');
+
+    handleWaitlistSubmit(heroForm, heroMsg);
+    handleWaitlistSubmit(ctaForm, ctaMsg);
+  </script>
+
+</body>
+</html>
